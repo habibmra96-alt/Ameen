@@ -1,6 +1,7 @@
 import React from 'react';
 import { Composition } from 'remotion';
 import { AmeenPromo } from './scenes/AmeenPromo';
+import { OmHungryPromo } from './scenes/OmHungryPromo';
 
 export const Root: React.FC = () => {
   return (
@@ -12,6 +13,14 @@ export const Root: React.FC = () => {
         fps={30}
         width={1920}
         height={1080}
+      />
+      <Composition
+        id="OmHungryPromo"
+        component={OmHungryPromo}
+        durationInFrames={1560}
+        fps={30}
+        width={1080}
+        height={1920}
       />
     </>
   );
