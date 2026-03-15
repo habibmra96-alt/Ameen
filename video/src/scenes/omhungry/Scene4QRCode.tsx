@@ -1,10 +1,11 @@
 import React from 'react';
 import { useCurrentFrame, useVideoConfig, spring, interpolate } from 'remotion';
+import { OmHungryLogo } from './OmHungryLogo';
 
 const ORANGE = '#E8461E';
 const ORANGE_LIGHT = '#FF6B3D';
+const BG = '#FFF2E8';
 
-// Simple QR code grid (static pattern)
 const QR_GRID = [
   [1,1,1,1,1,1,1,0,1,0,0,1,0,0,1,1,1,1,1,1,1],
   [1,0,0,0,0,0,1,0,0,1,1,0,1,0,1,0,0,0,0,0,1],
@@ -33,112 +34,97 @@ export const Scene4QRCode: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Heading
-  const headingOpacity = interpolate(frame, [0, 20], [0, 1], { extrapolateRight: 'clamp' });
+  // 60fps timings
+  const headingOpacity = interpolate(frame, [0, 40], [0, 1], { extrapolateRight: 'clamp' });
+  const headingY = interpolate(frame, [0, 40], [50, 0], { extrapolateRight: 'clamp' });
 
-  // QR code draws itself row by row
-  const rowsVisible = interpolate(frame, [15, 90], [0, 21], { extrapolateRight: 'clamp' });
+  const rowsVisible = interpolate(frame, [30, 180], [0, 21], { extrapolateRight: 'clamp' });
 
-  // Phone swoops in
-  const phoneScale = spring({ frame: frame - 95, fps, config: { damping: 14, stiffness: 90 } });
-  const phoneOpacity = interpolate(frame, [95, 115], [0, 1], { extrapolateRight: 'clamp' });
+  const phoneScale = spring({ frame: frame - 190, fps, config: { damping: 14, stiffness: 90 } });
+  const phoneOpacity = interpolate(frame, [190, 230], [0, 1], { extrapolateRight: 'clamp' });
 
-  // Shimmer on phone screen after phone enters
-  const shimmerX = interpolate(frame, [120, 160], [-300, 300], { extrapolateRight: 'clamp' });
-  const shimmerOpacity = interpolate(
-    frame,
-    [118, 125, 155, 165],
-    [0, 0.6, 0.6, 0],
-    { extrapolateRight: 'clamp' }
-  );
+  const shimmerX = interpolate(frame, [240, 320], [-300, 350], { extrapolateRight: 'clamp' });
+  const shimmerOpacity = interpolate(frame, [236, 250, 310, 330], [0, 0.7, 0.7, 0], { extrapolateRight: 'clamp' });
 
-  // Scanner line on QR code
-  const scannerY = interpolate(frame, [15, 90], [0, 200], { extrapolateRight: 'clamp' });
-  const scannerOpacity = interpolate(frame, [15, 25, 85, 95], [0, 1, 1, 0], { extrapolateRight: 'clamp' });
+  const scannerY = interpolate(frame, [30, 180], [0, 240], { extrapolateRight: 'clamp' });
+  const scannerOpacity = interpolate(frame, [30, 50, 170, 190], [0, 1, 1, 0], { extrapolateRight: 'clamp' });
 
-  // Exit
-  const sceneOpacity = interpolate(frame, [160, 180], [1, 0], { extrapolateRight: 'clamp' });
+  const stepsOpacity = interpolate(frame, [280, 340], [0, 1], { extrapolateRight: 'clamp' });
+  const logoOpacity = interpolate(frame, [120, 160], [0, 1], { extrapolateRight: 'clamp' });
 
-  const CELL = 10; // pixels per QR cell
+  const sceneOpacity = interpolate(frame, [320, 360], [1, 0], { extrapolateRight: 'clamp' });
+
+  const CELL = 13;
 
   return (
     <div
       style={{
         width: '100%',
         height: '100%',
-        backgroundColor: '#0D0D0D',
+        backgroundColor: BG,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
         fontFamily: 'Inter, system-ui, sans-serif',
         opacity: sceneOpacity,
-        paddingTop: 100,
+        paddingTop: 120,
+        paddingBottom: 100,
+        boxSizing: 'border-box',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* Background */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'radial-gradient(ellipse at 50% 40%, rgba(232,70,30,0.12) 0%, transparent 65%)',
-        }}
-      />
+      <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse at 50% 45%, ${ORANGE}10 0%, transparent 65%)` }} />
 
       {/* Heading */}
       <div
         style={{
           opacity: headingOpacity,
+          transform: `translateY(${headingY}px)`,
           textAlign: 'center',
-          marginBottom: 60,
-          padding: '0 60px',
+          padding: '0 70px',
           zIndex: 2,
         }}
       >
-        <p style={{ fontSize: 28, fontWeight: 600, color: ORANGE_LIGHT, margin: '0 0 12px', textTransform: 'uppercase', letterSpacing: 3 }}>
-          QR Code Menu
-        </p>
-        <h2 style={{ fontSize: 64, fontWeight: 800, color: '#ffffff', margin: 0 }}>
+        <div style={{ display: 'inline-block', background: `linear-gradient(135deg, ${ORANGE}, ${ORANGE_LIGHT})`, borderRadius: 50, padding: '12px 32px', marginBottom: 24 }}>
+          <span style={{ fontSize: 28, fontWeight: 700, color: '#fff', textTransform: 'uppercase', letterSpacing: 2 }}>QR Code Menu</span>
+        </div>
+        <h2 style={{ fontSize: 80, fontWeight: 900, color: '#1A1A1A', margin: 0, letterSpacing: '-2px' }}>
           Scan.{' '}
-          <span style={{ background: `linear-gradient(135deg, ${ORANGE}, ${ORANGE_LIGHT})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            Browse.
-          </span>{' '}
-          Done.
+          <span style={{ background: `linear-gradient(135deg, ${ORANGE}, ${ORANGE_LIGHT})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Browse.</span>
+          {' '}Done.
         </h2>
       </div>
 
-      {/* QR code container */}
+      {/* QR code */}
       <div
         style={{
           position: 'relative',
           backgroundColor: '#FFFFFF',
-          padding: 20,
-          borderRadius: 16,
-          boxShadow: `0 0 40px ${ORANGE}44`,
+          padding: 24,
+          borderRadius: 20,
+          boxShadow: `0 0 50px ${ORANGE}30, 0 20px 50px rgba(0,0,0,0.12)`,
           zIndex: 2,
-          marginBottom: 50,
         }}
       >
-        {/* Scanner line */}
         <div
           style={{
             position: 'absolute',
-            left: 20,
-            right: 20,
-            top: 20 + scannerY,
+            left: 24,
+            right: 24,
+            top: 24 + scannerY,
             height: 3,
             background: `linear-gradient(90deg, transparent, ${ORANGE}, transparent)`,
             opacity: scannerOpacity,
             zIndex: 5,
             borderRadius: 2,
+            boxShadow: `0 0 12px ${ORANGE}`,
           }}
         />
-        {/* QR Grid */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
           {QR_GRID.map((row, rowIdx) => (
-            <div key={rowIdx} style={{ display: 'flex', gap: 1, opacity: rowIdx < rowsVisible ? 1 : 0 }}>
+            <div key={rowIdx} style={{ display: 'flex', gap: 1.5, opacity: rowIdx < rowsVisible ? 1 : 0 }}>
               {row.map((cell, colIdx) => (
                 <div
                   key={colIdx}
@@ -146,98 +132,50 @@ export const Scene4QRCode: React.FC = () => {
                     width: CELL,
                     height: CELL,
                     backgroundColor: cell === 1 ? '#1A0A05' : '#FFFFFF',
-                    borderRadius: cell === 1 ? 1 : 0,
+                    borderRadius: cell === 1 ? 2 : 0,
                   }}
                 />
               ))}
             </div>
           ))}
         </div>
-        {/* OmHungry label below QR */}
-        <div
-          style={{
-            textAlign: 'center',
-            marginTop: 12,
-            fontSize: 14,
-            fontWeight: 700,
-            color: ORANGE,
-            letterSpacing: 1,
-          }}
-        >
+        <div style={{ textAlign: 'center', marginTop: 16, fontSize: 18, fontWeight: 800, color: ORANGE, letterSpacing: 1 }}>
           omhungry.com
         </div>
       </div>
 
-      {/* Phone with menu loaded */}
-      <div
-        style={{
-          opacity: phoneOpacity,
-          transform: `scale(${phoneScale})`,
-          zIndex: 2,
-          position: 'relative',
-        }}
-      >
-        <div
-          style={{
-            width: 200,
-            height: 340,
-            backgroundColor: '#1C1C1E',
-            borderRadius: 28,
-            padding: 8,
-            boxShadow: '0 30px 60px rgba(0,0,0,0.5), 0 0 40px rgba(232,70,30,0.3)',
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            style={{
-              width: '100%',
-              height: '100%',
-              backgroundColor: '#FFFCF9',
-              borderRadius: 22,
-              overflow: 'hidden',
-              position: 'relative',
-            }}
-          >
-            {/* Shimmer */}
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                bottom: 0,
-                left: shimmerX,
-                width: 80,
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)',
-                opacity: shimmerOpacity,
-                zIndex: 10,
-                transform: 'skewX(-15deg)',
-              }}
-            />
-            <div style={{ backgroundColor: ORANGE, padding: '28px 14px 14px', textAlign: 'center' }}>
-              <p style={{ color: '#fff', fontWeight: 700, fontSize: 14, margin: 0 }}>🍽️ Menu Loaded!</p>
+      {/* Phone result */}
+      <div style={{ opacity: phoneOpacity, transform: `scale(${phoneScale})`, zIndex: 2, position: 'relative' }}>
+        <div style={{ width: 240, height: 400, backgroundColor: '#1C1C1E', borderRadius: 34, padding: 10, boxShadow: `0 40px 80px rgba(0,0,0,0.25), 0 0 50px ${ORANGE}30`, overflow: 'hidden' }}>
+          <div style={{ width: '100%', height: '100%', backgroundColor: '#FFFCF9', borderRadius: 28, overflow: 'hidden', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: 0, bottom: 0, left: shimmerX, width: 100, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent)', opacity: shimmerOpacity, transform: 'skewX(-15deg)', zIndex: 10 }} />
+            <div style={{ background: `linear-gradient(135deg, ${ORANGE}, ${ORANGE_LIGHT})`, padding: '34px 18px 18px', textAlign: 'center' }}>
+              <div style={{ fontSize: 32, marginBottom: 6 }}>🍽️</div>
+              <p style={{ color: '#fff', fontWeight: 800, fontSize: 18, margin: 0 }}>Menu Loaded!</p>
             </div>
-            <div style={{ padding: 12 }}>
-              {['Starter', 'Main', 'Dessert'].map((item, i) => (
-                <div
-                  key={i}
-                  style={{
-                    height: 32,
-                    backgroundColor: i % 2 === 0 ? '#FFF4F0' : '#f5f5f5',
-                    borderRadius: 8,
-                    marginBottom: 8,
-                    display: 'flex',
-                    alignItems: 'center',
-                    paddingLeft: 10,
-                    fontSize: 12,
-                    color: '#555',
-                    fontWeight: 600,
-                  }}
-                >
+            <div style={{ padding: '14px 16px' }}>
+              {['🥗 Starters', '🍖 Mains', '🍰 Desserts'].map((item, i) => (
+                <div key={i} style={{ height: 44, backgroundColor: i % 2 === 0 ? '#FFF4F0' : '#f8f8f8', borderRadius: 10, marginBottom: 10, display: 'flex', alignItems: 'center', paddingLeft: 14, fontSize: 15, color: '#444', fontWeight: 700 }}>
                   {item}
                 </div>
               ))}
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Steps */}
+      <div style={{ opacity: stepsOpacity, display: 'flex', gap: 24, zIndex: 2 }}>
+        {['📷 Scan QR', '📋 Browse menu', '✅ Order!'].map((step, i) => (
+          <div key={i} style={{ textAlign: 'center', backgroundColor: '#fff', borderRadius: 16, padding: '16px 22px', boxShadow: '0 4px 16px rgba(232,70,30,0.12)', border: `1.5px solid ${ORANGE}25` }}>
+            <div style={{ fontSize: 22, fontWeight: 800, color: '#1A1A1A' }}>{step}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom logo */}
+      <div style={{ opacity: logoOpacity, zIndex: 2 }}>
+        <OmHungryLogo size={100} showText={true} />
       </div>
     </div>
   );

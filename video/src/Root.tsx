@@ -17,8 +17,8 @@ export const Root: React.FC = () => {
       <Composition
         id="OmHungryPromo"
         component={OmHungryPromo}
-        durationInFrames={1560}
-        fps={30}
+        durationInFrames={3120}
+        fps={60}
         width={1080}
         height={1920}
       />
